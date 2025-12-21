@@ -1,29 +1,33 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
-const api=axios.create({
-  baseURL:"aitspblog-production.up.railway.app"
+import axios from "axios";
+
+export const BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+export const api = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-async function request(path, { method = 'GET', token, data } = {}) {
-  const headers = { 'Content-Type': 'application/json' }
-  if (token) headers['Authorization'] = `Bearer ${token}`
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method,
-    headers,
-    body: data ? JSON.stringify(data) : undefined,
-  })
-  const json = await res.json().catch(() => ({}))
-  if (!res.ok || json.success === false) {
-    const message = json?.error?.message || json?.message || res.statusText
-    throw new Error(message)
+// Attach token automatically
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Simplify responses
+api.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    const message =
+      error.response?.data?.message || "API request failed";
+    return Promise.reject(new Error(message));
   }
-  return json
-}
-
-export const api = {
-  get: (path, opts) => request(path, { ...opts, method: 'GET' }),
-  post: (path, data, opts) => request(path, { ...opts, method: 'POST', data }),
-  put: (path, data, opts) => request(path, { ...opts, method: 'PUT', data }),
-  del: (path, data, opts) => request(path, { ...opts, method: 'DELETE', data }),
-}
-
-export { BASE_URL }
+);
