@@ -8,11 +8,13 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET || "changeme",
   resetTokenExpiresMin: Number(process.env.RESET_TOKEN_EXPIRES_MIN || 60),
   corsOrigin: process.env.CORS_ORIGIN || "*",
-  smtp: {
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT || 587),
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-    from: process.env.FROM_EMAIL || "no-reply@example.com"
-  }
+
+  // 🔹 Resend email configuration
+  resend: {
+    apiKey: process.env.RESEND_API_KEY,
+  },
+
+  mail: {
+    from: process.env.FROM_EMAIL || "onboarding@resend.dev",
+  },
 };
