@@ -9,36 +9,31 @@ import { apiLimiter } from "./middleware/rateLimit.js";
 const app = express();
 
 // ================================
-// Security & core middleware
+// CORS MUST COME FIRST (IMPORTANT)
 // ================================
-app.use(helmet());
-
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://efficient-nourishment-production.up.railway.app",
-];
-
-// ✅ MUST COME BEFORE ROUTES & RATE LIMIT
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(null, false);
-    },
+    origin: [
+      "http://localhost:5173",
+      "https://efficient-nourishment-production.up.railway.app",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// ✅ EXPLICITLY HANDLE PREFLIGHT
+// ✅ Explicitly answer preflight
 app.options("*", cors());
 
+// ================================
+// Security & core middleware
+// ================================
+app.use(helmet());
 app.use(express.json({ limit: "1mb" }));
-app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
+app.use(
+  morgan(process.env.NODE_ENV === "production" ? "combined" : "dev")
+);
 
 // ================================
 // Health checks
@@ -47,7 +42,7 @@ app.get("/health", (req, res) => res.json({ status: "ok" }));
 app.get("/ready", (req, res) => res.json({ status: "ready" }));
 
 // ================================
-// API routes (RATE LIMIT AFTER CORS)
+// API routes (rate limit AFTER CORS)
 // ================================
 app.use("/api", apiLimiter, router);
 
