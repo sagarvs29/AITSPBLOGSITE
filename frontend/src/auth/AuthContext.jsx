@@ -41,23 +41,16 @@ export function AuthProvider({ children }) {
   const register = async (email, password, name) => {
     setLoading(true); setError('')
     try {
-      // Register now only sends OTP, does not return token
-      await api.post('/api/auth/register', { email, password, name })
-      return true
-    } catch (err) {
-      setError(err.message); return false
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const verifyOtp = async (email, otp) => {
-    setLoading(true); setError('')
-    try {
-      const res = await api.post('/api/auth/verify-otp', { email, otp })
-      setToken(res.data.token)
-      localStorage.setItem('token', res.data.token)
-      setUser(res.data.user)
+      // Register now creates account and returns a token (no email verification)
+      const res = await api.post('/api/auth/register', { email, password, name })
+      const t = res.data?.token
+      if (t) {
+        setToken(t)
+        localStorage.setItem('token', t)
+        // fetch me
+        const me = await api.get('/api/auth/me', { token: t })
+        setUser(me.data)
+      }
       return true
     } catch (err) {
       setError(err.message); return false
@@ -73,7 +66,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthCtx.Provider value={{ token, user, loading, error, login, register, verifyOtp, logout }}>
+    <AuthCtx.Provider value={{ token, user, loading, error, login, register, logout }}>
       {children}
     </AuthCtx.Provider>
   )

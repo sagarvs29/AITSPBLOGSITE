@@ -11,12 +11,25 @@ export default function PostDetail() {
   const [comments, setComments] = useState([])
   const [content, setContent] = useState('')
   const [message, setMessage] = useState('')
+  const [related, setRelated] = useState([])
 
   const load = async () => {
     const res = await api.get(`/api/posts/${id}`)
     setPost(res.data)
     const c = await api.get(`/api/comments?postId=${id}&page=1&limit=20`)
     setComments(c.data.items)
+    // Load related by author or tag to keep the page purposeful
+    try {
+      const p = res.data
+      let rel = { data: { items: [] } }
+      if (p.authorId) {
+        rel = await api.get(`/api/posts?status=published&author=${p.authorId}&limit=3`)
+      } else if (Array.isArray(p.tags) && p.tags.length) {
+        rel = await api.get(`/api/posts?status=published&tag=${encodeURIComponent(p.tags[0])}&limit=3`)
+      }
+      const items = (rel.data.items || []).filter((x) => x._id !== id)
+      setRelated(items)
+    } catch (_) {}
   }
 
   useEffect(() => { load() }, [id])
@@ -93,6 +106,23 @@ export default function PostDetail() {
               </li>
             ))}
           </ul>
+
+          {/* Related to keep engagement and avoid empty bottoms */}
+          {related.length > 0 && (
+            <div className="mt-4">
+              <h3>Related posts</h3>
+              <div className="grid-3 mt-2">
+                {related.map((p) => (
+                  <article key={p._id} className="story card-hover">
+                    <h4 className="story-title"><a href={`/posts/${p._id}`}>{p.title}</a></h4>
+                    {p.tags && p.tags.length > 0 && (
+                      <div className="story-meta">#{p.tags.join(', #')}</div>
+                    )}
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
         </main>
         <aside className="ledger">
           <div className="meta">Author: {post.authorEmail || '—'}</div>

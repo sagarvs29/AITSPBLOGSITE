@@ -1,11 +1,22 @@
-# Milestone 5 – Frontend
+# Frontend (Vite + React)
 
-A minimal React (Vite) app to exercise the backend APIs from Milestones 1–4.
+A content‑first blog frontend with a readable newspaper aesthetic, optional soft dark mode, and subtle motion.
 
-## Setup
+## Local setup
 
-1. Copy `.env.example` to `.env` and set `VITE_API_URL` to your backend (default http://localhost:5000).
-2. Ensure backend CORS allows your frontend origin (for Vite default `http://localhost:5173`).
+1. Set API endpoint (either env or .env for local only):
+
+```powershell
+setx VITE_API_URL "http://localhost:5000"
+```
+
+Alternatively, create `.env` with:
+
+```
+VITE_API_URL=http://localhost:5000
+```
+
+2. Ensure backend CORS allows your frontend origin (Vite default `http://localhost:5173`).
 3. Install and run:
 
 ```powershell
@@ -15,6 +26,28 @@ npm run dev
 ```
 
 Open http://localhost:5173
+
+## Production build
+
+```powershell
+npm run build
+# Output in dist/
+```
+
+## Railway deployment (static hosting)
+
+This app is static and Railway-ready:
+
+- Build command: `npm run build`
+- Start command: `npm run start` (Vite preview, binds to `PORT`)
+- Environment: set `VITE_API_URL` in Railway; do not rely on `.env` in production
+
+Steps:
+
+1. Create a Railway service for `frontend/`.
+2. Set env var `VITE_API_URL` → backend URL (e.g., `https://<backend>.up.railway.app`).
+3. Configure Build `npm run build` and Start `npm run start`.
+4. Deploy.
 
 ## Features
 
@@ -26,7 +59,19 @@ Open http://localhost:5173
 - Writer: Create draft and submit for approval
 - Admin: List pending posts and approve publish
 
+### Visual polish
+
+- Subtle CSS-only animations (page and cards) with `prefers-reduced-motion` support
+- Soft dark mode via Theme Toggle (stored in `localStorage`, respects system preference)
+- Optimized reading width (~75ch) and high-contrast editorial palette
+
 ## Notes
 
 - If you see CORS errors, set `CORS_ORIGIN` in backend `.env` to your frontend URL.
 - Admin actions require logging in as an admin user. Use your existing admin or seed one via backend script.
+
+## Environment variables
+
+- `VITE_API_URL` (required) – URL of the backend API.
+
+In production on Railway, set env vars in the service settings (do not ship `.env`).

@@ -40,7 +40,7 @@ frontend/
 
 ## Core features
 
-- Account: register → email OTP → verify → login; password login; me; update profile
+- Account: register → login (no emails/OTP); password login; me; update profile
 - Visibility: PUBLIC / PRIVATE / CONNECTIONS; directory only shows PUBLIC
 - Connections: add/remove/list; impacts public profile visibility
 - Posts: draft → submit (PENDING) → approve (PUBLISHED); tags; search; author filter
@@ -109,14 +109,43 @@ npm run build
 # Output in frontend/dist
 ```
 
-## Auth & OTP flow
+## Frontend – Railway Deployment (Static Hosting)
 
-- Register (`POST /api/auth/register`) creates a user and sends a six‑digit OTP (in dev, email logs to console).
-- Verify (`POST /api/auth/verify-otp`) exchanges the OTP for a JWT and marks the user verified.
+The frontend is Vite/React and deploys as static assets. Railway requirements are already wired:
+
+- Build: `npm run build`
+- Start: `npm run start` (serves `dist` using Vite preview and binds to Railway's `PORT`)
+- Environment: set `VITE_API_URL` in Railway service settings (no `.env` in production)
+
+Steps (high level):
+
+1. In Railway, create a new service from the `frontend/` directory.
+2. Set Environment Variables:
+  - `VITE_API_URL` → your deployed backend URL (e.g., `https://<backend>.up.railway.app`)
+3. Build Command: `npm run build`
+4. Start Command: `npm run start`
+5. Deploy. The app will bind to `PORT` automatically.
+
+Notes:
+- The app reads `import.meta.env.VITE_API_URL` at runtime/build; no server-side rendering.
+- Fonts are loaded via Google Fonts CDN in `frontend/index.html` and work in static hosting.
+- Animations are CSS-only and respect `prefers-reduced-motion`.
+
+## Backend – Railway Deployment
+
+Backend is a Node/Express API. Provide the required env vars and expose the port Railway assigns:
+
+- Required: `MONGO_URL`, `JWT_SECRET`
+- Optional: `CORS_ORIGIN` (set to your frontend Railway URL)
+- Start command: `npm start`
+
+Ensure MongoDB is reachable from Railway (e.g., MongoDB Atlas connection string) and CORS allows your frontend origin.
+
+## Auth flow (Railway‑ready: no email)
+
+- Register (`POST /api/auth/register`) creates a verified account and returns a JWT.
 - Login (`POST /api/auth/login`) issues a JWT for email/password.
 - Me (`GET /api/auth/me`) returns `{ id, email, role, status, profile }`.
-
-Frontend Verify step uses segmented OTP boxes with auto‑advance, backspace navigation, paste distribution, and submission when complete.
 
 ## Key API (selection)
 
@@ -124,7 +153,7 @@ Frontend Verify step uses segmented OTP boxes with auto‑advance, backspace nav
   - `GET /api/users/me` (auth)
   - `PUT /api/users/me` (auth) → `{ name, photoUrl, bio, visibility }`
   - `GET /api/users/directory?q=&page=&limit=`
-  - `POST /api/users/:id/connect` (auth)
+ ## Auth flow (Railway‑ready: no email)
   - `DELETE /api/users/:id/connect` (auth)
   - `GET /api/users/:id` (auth optional; visibility rules apply)
 
@@ -171,9 +200,16 @@ Frontend Verify step uses segmented OTP boxes with auto‑advance, backspace nav
 
 ## Deployment notes
 
-- Backend: run Node process (PM2/systemd) behind a reverse proxy; set env securely; enable HTTPS.
-- Frontend: host static `dist/` via any web server (NGINX, Azure Static Web Apps, etc.); set `VITE_API_URL` to your API.
+- Backend: run Node process (PM2/systemd) or Railway Node service; set env securely; enable HTTPS via platform.
+- Frontend: static `dist/` hosted by Railway service with `npm start` preview server; set `VITE_API_URL` to your API.
 - CORS: restrict to your production frontend origin.
+
+## Visual design & accessibility
+
+- Editorial theme: neutral palette with muted oxblood accent; strong contrast for readability.
+- Typography: Playfair Display (headings), PT Serif (body), Courier Prime (meta). Long-form content constrained to ~75ch.
+- Motion: subtle page/card entrances and hover states; no layout shifts; `prefers-reduced-motion` honored.
+- Dark mode: optional soft dark theme via Theme Toggle (in the nav); persisted in localStorage; also respects system preference.
 
 ## References
 

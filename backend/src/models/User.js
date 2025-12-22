@@ -7,10 +7,8 @@ const UserSchema = new mongoose.Schema(
     role: { type: String, enum: ["USER", "ADMIN"], default: "USER" },
     status: { type: String, enum: ["ACTIVE", "SUSPENDED"], default: "ACTIVE" },
     
-    // OTP & Verification
-    isVerified: { type: Boolean, default: false },
-    otp: { type: String },
-    otpExpires: { type: Date },
+  // Verification flag retained for compatibility; email OTP removed
+  isVerified: { type: Boolean, default: true },
 
     profile: {
       name: { type: String, default: "" },

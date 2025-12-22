@@ -12,10 +12,9 @@ import PostDetail from './pages/PostDetail'
 import CreatePost from './pages/CreatePost'
 import Admin from './pages/Admin'
 import Connections from './pages/Connections'
-import ForgotPassword from './pages/ForgotPassword'
-import ResetPassword from './pages/ResetPassword'
 import PublicProfile from './pages/PublicProfile'
 import Notifications from './pages/Notifications'
+import Home from './pages/Home'
 
 export default function App() {
   return (
@@ -23,11 +22,10 @@ export default function App() {
       <NavBar />
       <div className="container page">
         <Routes>
-          <Route path="/" element={<Navigate to="/posts" />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/forgot" element={<ForgotPassword />} />
-          <Route path="/reset" element={<ResetPassword />} />
+          {/* Password reset/forgot removed in Railway-ready build */}
           <Route element={<ProtectedRoute />}> 
             <Route path="/profile" element={<Profile />} />
             <Route path="/connections" element={<Connections />} />

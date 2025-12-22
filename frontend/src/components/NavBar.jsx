@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import ThemeToggle from './ThemeToggle'
 
 export default function NavBar() {
   const { user, token, logout } = useAuth()
@@ -10,7 +11,7 @@ export default function NavBar() {
   return (
     <header className="nav">
       <div className="nav-inner">
-  <div className="nav-brand">AITSP BLOGS</div>
+        <div className="nav-brand"><Link to="/">AITSP BLOGS</Link></div>
         <div className="newspaper-rule" />
         <div className="nav-links">
           {!isAdmin && <Link to="/posts">Posts</Link>}
@@ -24,12 +25,14 @@ export default function NavBar() {
             {!isAdmin && <Link to="/create-post">Write</Link>}
             {!isAdmin && <Link to="/profile">Profile</Link>}
             {!isAdmin && <Link to="/connections">Connections</Link>}
+            <ThemeToggle />
             <button className="btn" onClick={onLogout}>Logout</button>
           </div>
         ) : (
           <div className="nav-actions">
             <Link to="/login">Login</Link>
             <Link to="/register">Register</Link>
+            <ThemeToggle />
           </div>
         )}
       </div>

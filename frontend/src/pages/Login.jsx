@@ -31,9 +31,7 @@ export default function Login() {
           </div>
           {error && <div className="meta" style={{ color: 'var(--accent-red)' }}>{error}</div>}
         </form>
-        <div className="mt-2">
-          <a href="/forgot">Forgot password?</a>
-        </div>
+        {/* Forgot password flow removed in Railway-ready build */}
       </div>
     </div>
   )
