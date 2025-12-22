@@ -15,21 +15,29 @@ app.set("trust proxy", 1);
 
 // ================================
 // CORS MUST COME FIRST (IMPORTANT)
+// Strict allowlist for production
 // ================================
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://efficient-nourishment-production.up.railway.app",
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://mindful-clarity-production.up.railway.app",
+];
 
-// ✅ Explicitly answer preflight
-app.options("*", cors());
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow same-origin or non-browser requests without Origin header
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+
+// ✅ Explicitly answer preflight with same options
+app.options("*", cors(corsOptions));
 
 // ================================
 // Security & core middleware
