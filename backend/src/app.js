@@ -8,6 +8,11 @@ import { apiLimiter } from "./middleware/rateLimit.js";
 
 const app = express();
 
+// Trust the first proxy (Railway/Heroku/Render add X-Forwarded-* headers)
+// This is required so express-rate-limit can correctly read client IPs behind a proxy
+// and to avoid ERR_ERL_UNEXPECTED_X_FORWARDED_FOR when X-Forwarded-For is present.
+app.set("trust proxy", 1);
+
 // ================================
 // CORS MUST COME FIRST (IMPORTANT)
 // ================================
