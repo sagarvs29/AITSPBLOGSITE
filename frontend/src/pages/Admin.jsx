@@ -60,7 +60,7 @@ export default function Admin() {
     const { id, reason } = deleteMemo
     if (!id || !reason.trim()) return
     try {
-      await api.del(`/api/admin/posts/${id}`, { reason }, { token })
+      await api.delete(`/api/admin/posts/${id}`, { data: { reason } })
       setPending((list) => list.filter((p) => p._id !== id))
       setPublished((list) => list.filter((p) => p._id !== id))
       setDeleteMemo({ id: null, reason: '' })
@@ -93,7 +93,7 @@ export default function Admin() {
     if (!confirm('Delete this member? This cannot be undone.')) return
     try {
       // Pass token as third argument (opts). First arg: path, second: data body (none here), third: opts.
-      await api.del(`/api/admin/users/${id}`, undefined, { token })
+      await api.delete(`/api/admin/users/${id}`)
       setMembers((list) => list.filter((m) => m._id !== id))
       if (selected?.id === id) setSelected(null)
     } catch (err) {

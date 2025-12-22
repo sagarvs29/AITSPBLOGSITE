@@ -20,7 +20,7 @@ export default function Connections() {
 
   const remove = async (id) => {
     try {
-      await api.del(`/api/users/${id}/connect`, { token })
+      await api.delete(`/api/users/${id}/connect`)
       setItems((list) => list.filter((x) => x._id !== id))
     } catch (err) { setMessage(err.message) }
   }

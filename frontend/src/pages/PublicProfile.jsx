@@ -61,7 +61,7 @@ export default function PublicProfile() {
     if (!token || isMe) return
     setConnBusy(true)
     try {
-      await api.del(`/api/users/${id}/connect`, { token })
+      await api.delete(`/api/users/${id}/connect`)
       setIsConn(false)
     } catch (e) {
       // swallow

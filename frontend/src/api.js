@@ -6,7 +6,7 @@ export const BASE_URL =
   import.meta.env.VITE_API_URL || (import.meta.env.MODE === 'production' ? RAILWAY_FALLBACK : "http://localhost:5000");
 
 export const api = axios.create({
-  baseURL: "https://aitspblogsite-production.up.railway.app",
+  baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -24,9 +24,9 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Simplify responses
+// Keep full axios response shape so callers can access response.data
 api.interceptors.response.use(
-  (response) => response.data,
+  (response) => response,
   (error) => {
     const message =
       error.response?.data?.message || "API request failed";
