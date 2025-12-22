@@ -47,7 +47,7 @@ export default function PostDetail() {
 
   const deleteOwn = async (cid) => {
     try {
-      await api.delete(`/api/comments/${cid}`)
+      await api.del(`/api/comments/${cid}`, { token })
       setComments((list) => list.filter((c) => c._id !== cid))
     } catch (err) {
       setMessage(err.message)

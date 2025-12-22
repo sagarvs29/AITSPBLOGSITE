@@ -37,7 +37,7 @@ export default function Directory() {
 
   const disconnect = async (id) => {
     try {
-      await api.delete(`/api/users/${id}/connect`)
+      await api.del(`/api/users/${id}/connect`, { token })
       setConnections((list) => list.filter((x) => x !== id))
     } catch {}
   }
