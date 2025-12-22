@@ -17,7 +17,7 @@ export default function PostDetail() {
     const res = await api.get(`/api/posts/${id}`)
     setPost(res.data)
     const c = await api.get(`/api/comments?postId=${id}&page=1&limit=20`)
-    setComments(c.data.items || [])
+    setComments(c.data.items)
     // Load related by author or tag to keep the page purposeful
     try {
       const p = res.data
@@ -94,7 +94,7 @@ export default function PostDetail() {
           )}
           {message && <div className="muted" style={{ color: 'var(--accent-red)' }}>{message}</div>}
           <ul className="comment-list">
-            {(comments || []).map((c) => (
+            {comments.map((c) => (
               <li key={c._id} className="comment-item">
                 <span style={{ flex: 1 }}>{c.content}</span>
                 {token && user?._id === c.authorId && (
