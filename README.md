@@ -47,6 +47,67 @@ frontend/
 - Comments: add/delete own; admin hide
 - Admin: stats, user search, suspend/delete, moderate posts, view author posts
 
+## How to use (app flow)
+
+End-to-end usage from a fresh setup or the deployed site:
+
+1) Register and log in
+- Use the Register page to create a user account, then log in.
+- Your JWT is stored in localStorage and used for authenticated requests.
+
+2) Update your profile
+- Go to Profile and set name, photo, bio, and choose visibility: PUBLIC, PRIVATE, or CONNECTIONS.
+
+3) Explore the directory
+- Directory shows only PUBLIC profiles. Use search and pagination to browse.
+- Connect to other members; CONNECTIONS visibility becomes visible to connected users.
+
+4) Write and publish a post
+- Create a post (draft), then Submit for review (status: PENDING).
+- An Admin reviews and Approves it (status: PUBLISHED). Published posts appear in listings and can be viewed by anyone.
+
+5) Comment and moderate
+- Logged-in users can comment on posts and delete their own comments.
+- Admins can hide comments that violate guidelines.
+
+6) Admin moderation
+- Admin can search members, Suspend or Delete accounts, review pending posts, and Approve or Delete posts (with an official memo/reason).
+
+## Admin login (defaults)
+
+Out of the box (or after running the seed script), the default admin credentials are:
+
+- Email: admin@example.com
+- Password: secret123
+
+To set or change the admin credentials, use env vars and the seed script in `backend/`:
+
+```powershell
+# From repo root
+Set-Location -Path 'e:\AISP\TASK\backend'
+
+# Optional overrides
+$env:ADMIN_EMAIL = 'admin@example.com'
+$env:ADMIN_PASSWORD = 'secret123'
+$env:ADMIN_NAME = 'Admin'
+$env:ADMIN_FORCE_RESET_PASSWORD = 'true' # resets existing admin's password
+
+node .\scripts\seed-admin.js
+```
+
+Log in with the admin account to access the Admin page for moderation.
+
+## Live (Railway)
+
+If you’re using the provided Railway deployments:
+
+- Frontend: https://mindful-clarity-production.up.railway.app
+- Backend API: https://aitspblogsite-production.up.railway.app
+
+Notes:
+- The frontend must point to the backend via `VITE_API_URL` at build/deploy time.
+- Backend CORS must allow the frontend origin.
+
 ## Backend setup (Windows PowerShell)
 
 1) Configure environment:

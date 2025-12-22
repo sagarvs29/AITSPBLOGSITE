@@ -75,3 +75,32 @@ Steps:
 - `VITE_API_URL` (required) – URL of the backend API.
 
 In production on Railway, set env vars in the service settings (do not ship `.env`).
+
+## Usage flow (quick guide)
+
+- Register and log in to get a JWT stored in localStorage.
+- Update your profile (name, photo, bio) and choose visibility: PUBLIC, PRIVATE, or CONNECTIONS.
+- Browse the Directory (PUBLIC profiles only), connect with members; CONNECTIONS visibility becomes visible to connected users.
+- Create a post (draft), then Submit for review. An Admin approves it to publish.
+- Comment on posts; you can delete your own comments. Admins can hide comments.
+
+## Admin login (defaults)
+
+If you seeded the backend admin using the provided script, the default credentials are:
+
+- Email: `admin@example.com`
+- Password: `secret123`
+
+To change or set the admin password, run the seed script in `backend/` with overrides:
+
+```powershell
+cd backend
+# Optional overrides before running the script
+$env:ADMIN_EMAIL = 'admin@example.com'
+$env:ADMIN_PASSWORD = 'secret123'
+$env:ADMIN_NAME = 'Admin'
+$env:ADMIN_FORCE_RESET_PASSWORD = 'true'  # reset existing admin password
+node .\scripts\seed-admin.js
+```
+
+Once logged in as Admin, open the Admin page to moderate posts and manage members.
