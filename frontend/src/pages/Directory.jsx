@@ -14,15 +14,15 @@ export default function Directory() {
 
   const load = async () => {
     const res = await api.get(`/api/users/directory?search=${encodeURIComponent(search)}&page=${page}&limit=${limit}`)
-    setItems(res.data.items)
-    setTotal(res.data.total)
+    setItems(res.data.items || [])
+    setTotal(res.data.total || 0)
   }
 
   const loadConnections = async () => {
     if (!token) return setConnections([])
     try {
       const res = await api.get('/api/users/connections', { token })
-      setConnections(res.data.items.map((x) => x._id))
+      setConnections((res.data.items || []).map((x) => x._id))
     } catch {}
   }
 
