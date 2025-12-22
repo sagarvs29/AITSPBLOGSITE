@@ -1,10 +1,12 @@
 import axios from "axios";
 
+const RAILWAY_FALLBACK = "https://aitspblogsite-production.up.railway.app"
+
 export const BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000";
+  import.meta.env.VITE_API_URL || (import.meta.env.MODE === 'production' ? RAILWAY_FALLBACK : "http://localhost:5000");
 
 export const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: "https://aitspblogsite-production.up.railway.app",
   headers: {
     "Content-Type": "application/json",
   },
