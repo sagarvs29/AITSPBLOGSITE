@@ -88,7 +88,7 @@ In production on Railway, set env vars in the service settings (do not ship `.en
 
 If you seeded the backend admin using the provided script, the default credentials are:
 
-- Email: `admin@example.com`
+- Username: `admin@example.com`
 - Password: `secret123`
 
 To change or set the admin password, run the seed script in `backend/` with overrides:
@@ -96,7 +96,7 @@ To change or set the admin password, run the seed script in `backend/` with over
 ```powershell
 cd backend
 # Optional overrides before running the script
-$env:ADMIN_EMAIL = 'admin@example.com'
+$env:ADMIN_USERNAME = 'admin@example.com'
 $env:ADMIN_PASSWORD = 'secret123'
 $env:ADMIN_NAME = 'Admin'
 $env:ADMIN_FORCE_RESET_PASSWORD = 'true'  # reset existing admin password

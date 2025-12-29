@@ -11,7 +11,6 @@ This guide explains how to integrate the backend and/or frontend into an existin
 ## Compatibility overview
 
 - Auth: JWT Bearer tokens; `Authorization: Bearer <token>`
-- Email/OTP removed for Railway: register returns JWT directly; you can re‑enable email in your fork if needed
 - Users: visibility flags (PUBLIC/PRIVATE/CONNECTIONS) drive directory and public profile access
 - Posts: status lifecycle (DRAFT → PENDING → PUBLISHED → DELETED)
 - Comments: owner delete; admin hide
@@ -30,7 +29,7 @@ This guide explains how to integrate the backend and/or frontend into an existin
 2) Data models (Mongoose)
 
 - `User`
-  - Fields include: `email`, `passwordHash`, `role` (USER/ADMIN), `status` (ACTIVE/SUSPENDED), `isVerified` (defaults true in Railway build), `profile { name, photoUrl, bio, visibility }`, `connections[]`
+  - Fields include: `username`, `passwordHash`, `role` (USER/ADMIN), `status` (ACTIVE/SUSPENDED), `isVerified` (defaults true), `profile { name, photoUrl, bio, visibility }`, `connections[]`
 - `Post`
   - `{ authorId, title, slug(unique), content, status, publishedAt, tags[] }`
 - `Comment`
@@ -59,12 +58,12 @@ Seed an admin or upgrade an existing account:
 ```powershell
 cd backend
 npm run seed:admin
-# Overrides via env: ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME, ADMIN_FORCE_RESET_PASSWORD
+# Overrides via env: ADMIN_USERNAME, ADMIN_PASSWORD, ADMIN_NAME, ADMIN_FORCE_RESET_PASSWORD
 ```
 
 6) Data migration tips
 
-- Users: since email verification is removed here, set `isVerified=true` for existing accounts
+- Users: set `isVerified=true` for existing accounts
 - Posts: normalize `status` to uppercase values (`DRAFT`, `PENDING`, `PUBLISHED`, `DELETED`)
 - Directory: set `profile.visibility='PUBLIC'` for users you want to appear
 
@@ -82,7 +81,7 @@ npm run seed:admin
 
 2) Auth context & routes
 
-- `AuthContext.jsx` handles login/register/me and stores JWT (no OTP)
+- `AuthContext.jsx` handles login/register/me and stores JWT
 - `ProtectedRoute.jsx` guards routes that need auth
 
 If your backend differs, adjust `frontend/src/api.js` and the auth methods accordingly.

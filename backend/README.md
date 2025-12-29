@@ -17,8 +17,7 @@ JavaScript-only Express + MongoDB backend scaffold for auth, profiles, blog post
 - `MONGO_URL` – MongoDB connection string
 - `PORT` – server port (default 5000)
 - `JWT_SECRET` – JWT signing secret
-- SMTP variables are optional; without them, emails are logged to console.
- - `CORS_ORIGIN` – allowed frontend origin (defaults to `*`)
+- `CORS_ORIGIN` – allowed frontend origin (defaults to `*`)
 
 ## Structure
 ```
@@ -45,11 +44,9 @@ src/
 
 ### Milestone 1 (Auth)
 - Endpoints:
-  - `POST /api/auth/register` { email, password, name? } → returns `{ data: { token } }`
-  - `POST /api/auth/login` { email, password } → returns `{ data: { token } }`
+  - `POST /api/auth/register` { username, password, name? } → returns `{ data: { token } }`
+  - `POST /api/auth/login` { username, password } → returns `{ data: { token } }`
   - `GET /api/auth/me` (Bearer token)
-  - `POST /api/auth/reset/request` { email } → sends reset email (Ethereal in dev)
-  - `POST /api/auth/reset/confirm` { token, newPassword }
 - Middleware: `requireAuth`, `requireActive`
 - Validation: Zod schemas per route
 
@@ -132,7 +129,7 @@ Tips:
 ### Milestone 4 (Admin APIs)
 - `GET /api/admin/stats` → { totalMembers, totalPosts, publishedPosts, comments }
 - `GET /api/admin/users?q=&status=&page=&limit=` → list users with search + pagination
-- `GET /api/admin/users/:id` → get user details (email, role, status, profile)
+- `GET /api/admin/users/:id` → get user details (username, role, status, profile)
 - `GET /api/admin/posts?q=&author=&status=&tag=&page=&limit=` → list posts for moderation
 - `POST /api/admin/users/:id/suspend` → suspend user
 - `DELETE /api/admin/users/:id` → delete user
@@ -142,7 +139,7 @@ Tips:
 
 ```powershell
 # Login and get token
-$body = @{ email='user1@example.com'; password='secret123' } | ConvertTo-Json
+$body = @{ username='user1@example.com'; password='secret123' } | ConvertTo-Json
 $login = Invoke-RestMethod -Method Post -Uri 'http://localhost:5000/api/auth/login' -ContentType 'application/json' -Body $body
 $token = $login.data.token
 
@@ -159,7 +156,6 @@ Invoke-RestMethod -Method Get -Uri 'http://localhost:5000/api/users/directory?q=
 
 ## Notes
 - Keep only one dev server running (avoid EADDRINUSE on port 5000).
-- For email in dev, Ethereal preview URL is logged to console.
 
 ## Admin user
 
@@ -171,10 +167,10 @@ npm run seed:admin
 ```
 
 Defaults:
-- Email: `admin@example.com`
+- Username: `admin@example.com`
 - Password: `secret123`
 
 You can override via env vars when running the seed script:
-- `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME`, `ADMIN_FORCE_RESET_PASSWORD=true`
+- `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_NAME`, `ADMIN_FORCE_RESET_PASSWORD=true`
 
 Log in with the admin to access protected admin routes and approve posts.
