@@ -40,7 +40,7 @@ frontend/
 
 ## Core features
 
-- Account: register → login (no emails/OTP); password login; me; update profile
+- Account: register → login (username/password); me; update profile
 - Visibility: PUBLIC / PRIVATE / CONNECTIONS; directory only shows PUBLIC
 - Connections: add/remove/list; impacts public profile visibility
 - Posts: draft → submit (PENDING) → approve (PUBLISHED); tags; search; author filter
@@ -77,7 +77,7 @@ End-to-end usage from a fresh setup or the deployed site:
 
 Out of the box (or after running the seed script), the default admin credentials are:
 
-- Email: admin@example.com
+- Username: admin@example.com
 - Password: secret123
 
 To set or change the admin credentials, use env vars and the seed script in `backend/`:
@@ -87,7 +87,7 @@ To set or change the admin credentials, use env vars and the seed script in `bac
 Set-Location -Path 'e:\AISP\TASK\backend'
 
 # Optional overrides
-$env:ADMIN_EMAIL = 'admin@example.com'
+$env:ADMIN_USERNAME = 'admin@example.com'
 $env:ADMIN_PASSWORD = 'secret123'
 $env:ADMIN_NAME = 'Admin'
 $env:ADMIN_FORCE_RESET_PASSWORD = 'true' # resets existing admin's password
@@ -139,7 +139,7 @@ npm run dev   # or: npm start
 npm run seed:admin
 
 # Overrides
-$env:ADMIN_EMAIL = 'admin@example.com'
+$env:ADMIN_USERNAME = 'admin@example.com'
 $env:ADMIN_PASSWORD = 'secret123'
 $env:ADMIN_NAME = 'Admin'
 $env:ADMIN_FORCE_RESET_PASSWORD = 'true'  # only if you want to reset an existing account's password
@@ -205,8 +205,8 @@ Ensure MongoDB is reachable from Railway (e.g., MongoDB Atlas connection string)
 ## Auth flow (Railway‑ready)
 
 - Register (`POST /api/auth/register`) creates a verified account and returns a JWT.
-- Login (`POST /api/auth/login`) issues a JWT for email/password.
-- Me (`GET /api/auth/me`) returns `{ id, email, role, status, profile }`.
+- Login (`POST /api/auth/login`) issues a JWT for username/password.
+- Me (`GET /api/auth/me`) returns `{ id, username, role, status, profile }`.
 
 ## Key API (selection)
 
