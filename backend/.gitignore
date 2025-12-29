@@ -12,7 +12,7 @@ pnpm-debug.log*
 logs/
 *.log
 
-# Build/output
+# Build / output
 dist/
 coverage/
 .nyc_output/
