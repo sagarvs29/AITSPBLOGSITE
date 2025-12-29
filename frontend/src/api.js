@@ -12,6 +12,14 @@ export const api = axios.create({
   },
 });
 
+// Provide a small alias compatible with existing call sites:
+// api.del(path, data?, opts?) -> axios.delete(path, { data, ...opts })
+api.del = (url, data, opts) => {
+  const config = { ...(opts || {}) }
+  if (data !== undefined) config.data = data
+  return api.delete(url, config)
+}
+
 // Attach token automatically
 api.interceptors.request.use(
   (config) => {
