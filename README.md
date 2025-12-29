@@ -202,7 +202,7 @@ Backend is a Node/Express API. Provide the required env vars and expose the port
 
 Ensure MongoDB is reachable from Railway (e.g., MongoDB Atlas connection string) and CORS allows your frontend origin.
 
-## Auth flow (Railway‑ready: no email)
+## Auth flow (Railway‑ready)
 
 - Register (`POST /api/auth/register`) creates a verified account and returns a JWT.
 - Login (`POST /api/auth/login`) issues a JWT for email/password.
@@ -214,7 +214,7 @@ Ensure MongoDB is reachable from Railway (e.g., MongoDB Atlas connection string)
   - `GET /api/users/me` (auth)
   - `PUT /api/users/me` (auth) → `{ name, photoUrl, bio, visibility }`
   - `GET /api/users/directory?q=&page=&limit=`
- ## Auth flow (Railway‑ready: no email)
+ ## Auth flow (Railway‑ready)
   - `DELETE /api/users/:id/connect` (auth)
   - `GET /api/users/:id` (auth optional; visibility rules apply)
 
