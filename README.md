@@ -276,3 +276,4 @@ Ensure MongoDB is reachable from Railway (e.g., MongoDB Atlas connection string)
 
 - More details in `backend/README.md` and `frontend/README.md`.
 - Integration scenarios and migration checklist in `docs/INTEGRATION.md`.
+- **Interview preparation:** Expected interview questions and answers in `docs/INTERVIEW_QUESTIONS.md`.
