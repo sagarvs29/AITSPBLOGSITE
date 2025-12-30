@@ -150,17 +150,29 @@ frontend/src/
 
 ```javascript
 const api = {
-  get: (path, token) => axios.get(baseURL + path, { headers: { Authorization: `Bearer ${token}` } }),
-  post: (path, data, token) => axios.post(baseURL + path, data, { headers: { Authorization: `Bearer ${token}` } }),
-  put: (path, data, token) => axios.put(baseURL + path, data, { headers: { Authorization: `Bearer ${token}` } }),
-  del: (path, data, token) => axios.delete(baseURL + path, { headers: { Authorization: `Bearer ${token}` }, data })
+  get: (path, token) => {
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    return axios.get(baseURL + path, { headers });
+  },
+  post: (path, data, token) => {
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    return axios.post(baseURL + path, data, { headers });
+  },
+  put: (path, data, token) => {
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    return axios.put(baseURL + path, data, { headers });
+  },
+  del: (path, data, token) => {
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    return axios.delete(baseURL + path, { headers, data });
+  }
 }
 ```
 
 **Benefits:**
 - Single source of truth for base URL
 - Consistent error handling
-- Automatic token injection
+- Automatic token injection with null/undefined safety
 - Easy to add interceptors for logging/retry logic
 
 ### Q3.4: Explain your routing strategy.
@@ -283,8 +295,12 @@ Three visibility levels:
 **Implementation:**
 ```javascript
 // In GET /api/users/:id
-if (profile.visibility === 'PRIVATE' && !isOwnerOrAdmin) return 403
-if (profile.visibility === 'CONNECTIONS' && !isConnectedOrAdmin) return 403
+if (profile.visibility === 'PRIVATE' && !isOwnerOrAdmin) {
+  return res.status(403).json({ success: false, error: 'Access denied' });
+}
+if (profile.visibility === 'CONNECTIONS' && !isConnectedOrAdmin) {
+  return res.status(403).json({ success: false, error: 'Access denied' });
+}
 ```
 
 ### Q4.5: How do you implement search functionality?
@@ -669,7 +685,8 @@ Using `express-rate-limit`:
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // 100 requests per window
-  message: 'Too many requests'
+  statusCode: 429, // Too Many Requests
+  message: { success: false, error: 'Too many requests, please try again later' }
 })
 
 app.use('/api', limiter)
@@ -679,6 +696,7 @@ app.use('/api', limiter)
 - Prevents brute force attacks
 - Protects against DDoS
 - Ensures fair usage
+- Proper HTTP status code (429) for rate limiting
 
 **Could enhance:**
 - Different limits for different endpoints
